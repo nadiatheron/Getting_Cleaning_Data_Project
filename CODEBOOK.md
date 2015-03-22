@@ -93,9 +93,9 @@ subject_test.txt /subject_train.txt were merged into the subject dataset of 1029
 |fBodyBodyGyroJerkMag-std()| |
 
 
-*In Tidy.mean the variables are the same as above but the features are averages of each of the columns for each activity and each subject. *
+*In Tidy.mean the variables are the same as above but the features are averages of each of the columns for each activity and each subject.*
 
-Additional detail on the features can be found here: features_info.txt: 
+Additional detail on the features can be found in features_info.txt: 
 ```
 “The features selected for this database come from the accelerometer and gyroscope 3-axial raw signals tAcc-XYZ and tGyro-XYZ. These time domain signals (prefix 't' to denote time) were captured at a constant rate of 50 Hz. Then they were filtered using a median filter and a 3rd order low pass Butterworth filter with a corner frequency of 20 Hz to remove noise. Similarly, the acceleration signal was then separated into body and gravity acceleration signals (tBodyAcc-XYZ and tGravityAcc-XYZ) using another low pass Butterworth filter with a corner frequency of 0.3 Hz. 
 
