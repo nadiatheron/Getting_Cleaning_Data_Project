@@ -1,19 +1,23 @@
-Explanation of the run_analysis.R
+##Explanation of the run_analysis.R
 The R script called run_analysis.R does the following: 
-1. Merge the training and the test sets to create one data set.
-2. Extracts only the measurements on the mean and standard deviation for each measurement. 
-3. Uses descriptive activity names to name the activities in the data set
-4. Appropriately labels the data set with descriptive variable names. 
-5. From the data set in step 4, creates a second, independent tidy data set with the average of each variable for each activity and each subject.
-Please see run_analysis.R for detailed comments on how this is implemented. High level overview of the steps taken are shown below – 
-Step 1 (& step 4)
+ 1.  Merge the training and the test sets to create one data set.
+ 2.  Extracts only the measurements on the mean and standard deviation for each measurement. 
+ 3.  Uses descriptive activity names to name the activities in the data set
+ 4. Appropriately labels the data set with descriptive variable names. 
+ 5. From the data set in step 4, creates a second, independent tidy data set with the average of each variable for each activity and each subject.
+
+*Please see run_analysis.R for detailed comments on how this is implemented. High level overview of the steps taken are shown below –* 
+
+###Step 1 (& step 4)
 •	A data directory is created (if it doesn’t already exist) into which the zip file is downloaded from the internet
 •	Reads in the in the individual test and training datasets and uses rbind() to create a dataset for the feature, subject and activity data
 •	Labels the data with descriptive variable names as required in step 4 above
-# Checks for data directory and creates one if it doesn't exist
-if(!file.exists("./data")){
-        dir.create("./data")
-}
+
+```
+ # Checks for data directory and creates one if it doesn't exist
+  if(!file.exists("./data")){   
+         dir.create("./data")   
+ }                                         
 # Checks whether the source data has been downloaded and downloads it if it doesn't exist
 if(!file.exists("./data/UCI HAR Dataset"))){
         fileUrl <- "https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip"
@@ -40,11 +44,14 @@ names(activity.data) <- "activity.id"
 subject.data <- rbind(subject_train,subject_test)
 names(subject.data) <- "subject"
 dim(subject.data)
+```
 
-Step 2
+###Step 2
 •	Reads in feature.txt and saved the feature names into feature.names
 •	Identifies the column numbers that contain ‘mean()’ or ‘std()’ 
 •	Use the indices to select the columns from the data and name them accordingly
+
+```
 # Read in the feature dataset that identifies the feature names
 features <- read.table("./data/UCI HAR Dataset/features.txt")
 feature.names <- c(as.character(features$V2))
@@ -55,10 +62,13 @@ meanstdfeature.names <- feature.names[indices_for_mean_std]
 meanstdfeature.data <- feature.data[,c(indices_for_mean_std)]
 names(meanstdfeature.data) <- c(meanstdfeature.names)
 dim(meanstdfeature.data) 
+```
 
-Step 3
+###Step 3
 •	Reads in activity_labels.txt that contains both the activity ids and corresponding labels
 •	Replaces the numeric activity ids with the labels in a factor column
+
+```
 # labels names based on activity_labels.txt
 # rename generic column names V1 & V2 with descriptive variable names
 activity_labels <- read.table("./data/UCI HAR Dataset/activity_labels.txt",col.names=c("activity.id","activity.label"))
@@ -71,29 +81,33 @@ activitylabel.data <- subset(activity.data,select=c(activity.label))
 merged.data <- cbind(subject.data,activitylabel.data,meanstdfeature.data)
 str(merged.data)
 dim(merged.data)
+```
 
-Step 4
+###Step 4
 •	The names function is used in each of the preceding steps to label the data variables appropriately
+
+```
 names(feature.data) <- feature.names
 names(activity.data) <- "activity.id"
 names(subject.data) <- "subject"
 names(meanstdfeature.data) <- c(meanstdfeature.names)
 activity_labels <- read.table("./data/UCI HAR Dataset/activity_labels.txt",col.names=c("activity.id","activity.label"))
+```
 
-Step 5
+###Step 5
 •	The ddply function is used to calculate the column mean in the wide dataset for each subject and activity. 
 •	A new data frame is created using write.table: 
-write.table(tidy.mean, file = "tidymean.txt",row.name=FALSE)
+**write.table(tidy.mean, file = "tidymean.txt",row.name=FALSE)**
 This table can be read using:
-read.table(file_path, header = TRUE)
+**read.table(file_path, header = TRUE)**
 
-
-
+```
 tidy.mean <- ddply(merged.data, .(subject, activity.label),colwise(mean),.drop=FALSE)
 # Sanity check - not all combinations of subject & activity appears, however these combinations are retained in the dataset by .drop=FALSE
 table(merged.data$subject,merged.data$activity)
 str(tidy.mean)
 dim(tidy.mean)
 View(tidy.mean)
+```
 
 
